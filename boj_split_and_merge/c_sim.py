@@ -14,7 +14,7 @@ def valid(x):  # x is a permutation
                     return False
     return True
 
-for i in range(2, 10):
+for i in range(1, 10):
     a = permutations(range(1, i + 1))
     cnt = 0
     for x in a:
