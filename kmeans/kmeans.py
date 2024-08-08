@@ -53,7 +53,7 @@ def kmeans(X, weights, n_clusters, max_iter=100, alpha=2, random_state=None):
             else:
                 new_centroids[k] = X[np.random.randint(0, n_samples)]
 
-        if np.allclose(centroids, new_centroids):
+        if np.sum(np.abs(centroids - new_centroids)) == 0:
             break
         centroids = new_centroids
         labels = new_labels

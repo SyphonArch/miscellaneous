@@ -16,8 +16,6 @@ random_state = 42
 # Run the custom K-means
 centroids, labels = kmeans(X, weights, n_clusters, max_iter, alpha, random_state)
 
-print(centroids)
-
 # Plot the data points and centroids
 plt.figure(figsize=(8, 6))
 plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis', marker='o')
