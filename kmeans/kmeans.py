@@ -40,7 +40,7 @@ def kmeans(X, weights, n_clusters, max_iter=100, alpha=2, random_state=None):
     labels = np.zeros(n_samples, dtype=np.int64)
 
     for _ in range(max_iter):
-        new_labels = np.argmin(_distance_from_points(X, centroids), axis=1)
+        new_labels = np.argmin(_distance_from_points(X, centroids), axis=0)
         new_centroids = np.empty_like(centroids)
 
         for k in range(n_clusters):
@@ -86,11 +86,14 @@ def _kmeans_plusplus(X, weights, n_clusters, alpha):
         candidate_idxs = _numba_rand_choice(n_local_trials, probabilities)
         candidates = X[candidate_idxs]
 
-        best_candidate = candidates[
-            np.argmin(np.sum(np.minimum(distances[:, None], _distance_from_points(X, candidates)), axis=0))]
+        distances_per_candidate = np.minimum(distances, _distance_from_points(X, candidates))
+        distance_sum_per_candidate = np.sum(distances_per_candidate, axis=1)
+        best_candidate_idx = np.argmin(distance_sum_per_candidate)
+        best_candidate = candidates[best_candidate_idx]
+
         centroids[k] = best_candidate
-        new_distances = _distance_from_point(X, centroids[k])
-        distances = np.minimum(distances, new_distances)
+        distances = distances_per_candidate[best_candidate_idx]
+
         distances_alpha = distances ** alpha * weights
 
     return centroids
@@ -105,9 +108,9 @@ def _distance_from_point(X, point):
 def _distance_from_points(X, points):
     n_samples = X.shape[0]
     n_points = points.shape[0]
-    distances = np.empty((n_samples, n_points), dtype=X.dtype)
+    distances = np.empty((n_points, n_samples), dtype=X.dtype)
     for i in range(n_points):
-        distances[:, i] = _distance_from_point(X, points[i])
+        distances[i] = _distance_from_point(X, points[i])
     return distances
 
 
