@@ -86,9 +86,9 @@ def _kmeans_plusplus(X, weights, n_clusters, alpha):
         candidate_idxs = _numba_rand_choice(n_local_trials, probabilities)
         candidates = X[candidate_idxs]
 
-        best_candidate_idx = candidates[
+        best_candidate = candidates[
             np.argmin(np.sum(np.minimum(distances[:, None], _distance_from_points(X, candidates)), axis=0))]
-        centroids[k] = best_candidate_idx
+        centroids[k] = best_candidate
         new_distances = _distance_from_point(X, centroids[k])
         distances = np.minimum(distances, new_distances)
         distances_alpha = distances ** alpha * weights
