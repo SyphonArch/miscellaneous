@@ -47,7 +47,8 @@ def kmeans(X, weights, n_clusters, max_iter=100, alpha=2, random_state=None):
             if np.any(new_labels == k):
                 cluster_points = X[new_labels == k]
                 cluster_weights = weights[new_labels == k]
-                new_centroid = np.sum(cluster_points.T * cluster_weights, axis=1) / np.sum(cluster_weights)
+                new_centroid = np.sum(cluster_points * cluster_weights.T[..., np.newaxis] , axis=0) / np.sum(
+                    cluster_weights)
                 new_centroids[k] = new_centroid
             else:
                 new_centroids[k] = X[np.random.randint(0, n_samples)]
