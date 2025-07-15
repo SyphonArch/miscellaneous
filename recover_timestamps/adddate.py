@@ -51,6 +51,14 @@ def extract_timestamp_from_name(name: str) -> str | None:
         except ValueError:
             return None
 
+    # YYYYMMDDHHMMSS
+    elif m := re.search(r"(?<!\d)(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?!\d)", name):
+        y, mth, d, H, M, S = map(int, m.groups())
+        try:
+            dt = datetime(y, mth, d, H, M, S)
+        except ValueError:
+            return None
+
     # Standalone YYYYMMDD
     elif m := re.search(r"(?<!\d)(\d{4})(\d{2})(\d{2})(?!\d)", name):
         y, mth, d = map(int, m.groups())
@@ -67,7 +75,7 @@ def extract_timestamp_from_name(name: str) -> str | None:
         except Exception:
             return None
 
-    if dt and 1995 <= dt.year <= 2050:  # Might want to adapt
+    if dt and 1995 <= dt.year <= 2026:
         return dt.strftime("%Y:%m:%d %H:%M:%S")
     return None
 
@@ -86,7 +94,7 @@ def metadata_present(path: Path) -> bool:
             if isinstance(val, str):
                 try:
                     dt = datetime.strptime(val, "%Y:%m:%d %H:%M:%S")
-                    if 1995 <= dt.year <= 2050:  # Again, might want to adapt
+                    if 1995 <= dt.year <= 2026:
                         return True
                 except ValueError:
                     continue
@@ -108,7 +116,7 @@ def scan_folder(root: Path) -> dict:
         "photo": Counter(),
         "video": Counter(),
     }
-    print(f"📂 Scanning folder: {root}")
+    print(f"🔍 Scanning folder: {root}")
 
     missing_files: dict[str, list[tuple[Path, str]]] = defaultdict(list)
     unfixable_files: list[tuple[str, Path]] = []
