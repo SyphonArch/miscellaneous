@@ -198,7 +198,7 @@ def write_phase(missing_files: dict[str, list[tuple[Path, str]]]):
 
 def main():
     if len(sys.argv) != 2:
-        sys.exit("Usage: fix_dates.py /path/to/media_root")
+        sys.exit("Usage: adddate.py /path/to/media_root")
 
     root = Path(sys.argv[1]).expanduser()
     if not root.is_dir():
