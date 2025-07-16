@@ -51,6 +51,14 @@ def extract_timestamp_from_name(name: str) -> str | None:
         except ValueError:
             return None
 
+    # YYYY-MM-DD HH.MM.SS
+    elif m := re.search(r"(\d{4})-(\d{2})-(\d{2})[ ](\d{2})\.(\d{2})\.(\d{2})", name):
+        y, mth, d, H, M, S = map(int, m.groups())
+        try:
+            dt = datetime(y, mth, d, H, M, S)
+        except ValueError:
+            return None
+
     # YYYYMMDDHHMMSS
     elif m := re.search(r"(?<!\d)(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?!\d)", name):
         y, mth, d, H, M, S = map(int, m.groups())
